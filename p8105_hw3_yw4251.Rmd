@@ -1,0 +1,34 @@
+---
+title: "p8105_hw3_yw4251"
+author: "You Wu"
+date: 2023-10-10
+output: github_document
+---
+# Problem 0
+```{r}
+library(tidyverse)
+library(p8105.datasets)
+library(ggridges)
+```
+
+# Problem 1
+```{r}
+data("instacart")
+instacart
+```
+
+## How many aisles are there, and which aisles are the most items ordered from?
+```{r}
+aisle_counts=
+  instacart %>% 
+  group_by(aisle) %>% 
+  summarize(
+    n_obs=n()
+  ) %>% 
+  arrange(-n_obs)
+```
+
+```{r}
+ggplot
+```
+
