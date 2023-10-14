@@ -29,10 +29,17 @@ scale_fill_discrete = scale_fill_viridis_d
 ```
 
 # Problem 1
+
+First, load the data.
+
 ```{r}
 data("instacart")
 instacart
 ```
+
+## description
+This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns, where each row in the dataset is a product from an order. Variables include identifiers for user, order, and product; the order in which each product was added to the cart. There are several order-level variables, describing the day and time of the order, and number of days since prior order. Then there are several item-specific variables, describing the product name (e.g. Yogurt, Avocado), department (e.g. dairy and eggs, produce), and aisle (e.g. yogurt, fresh fruits), and whether the item has been ordered by this user in the past. In total, there are `r instacart |> select(product_id) |> distinct() |> count()` products found in `r instacart |> select(user_id, order_id) |> distinct() |> count()` orders from `r instacart |> select(user_id) |> distinct() |> count()` distinct users.
+
 
 ## How many aisles are there, and which aisles are the most items ordered from?
 ```{r}
@@ -54,7 +61,7 @@ aisle_counts %>%
   filter(n_obs>10000) %>% 
   mutate(aisle = forcats::fct_reorder(aisle, n_obs)) %>% 
   ggplot(aes(x=aisle,y=n_obs))+
-  geom_bar(stat = "identity",width=0.7)+
+  geom_point()+
   labs(
     title = "Number of items ordered in each aisle",
     x = "Aisle Names",
@@ -63,7 +70,8 @@ aisle_counts %>%
   scale_y_continuous(
     breaks = c(10000, 60000, 110000, 160000),
     labels = c("10000","60000", "110000","160000"))+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+  theme(axis.text.x = element_text(angle = 60, hjust = 1),
+        plot.title = element_text(hjust = 0.5))
 ```
 
 ## Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”.
