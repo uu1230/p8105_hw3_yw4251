@@ -37,7 +37,7 @@ data("instacart")
 instacart
 ```
 
-## description
+## Description
 This dataset contains `r nrow(instacart)` rows and `r ncol(instacart)` columns, where each row in the dataset is a product from an order. Variables include identifiers for user, order, and product; the order in which each product was added to the cart. There are several order-level variables, describing the day and time of the order, and number of days since prior order. Then there are several item-specific variables, describing the product name (e.g. Yogurt, Avocado), department (e.g. dairy and eggs, produce), and aisle (e.g. yogurt, fresh fruits), and whether the item has been ordered by this user in the past. In total, there are `r instacart |> select(product_id) |> distinct() |> count()` products found in `r instacart |> select(user_id, order_id) |> distinct() |> count()` orders from `r instacart |> select(user_id) |> distinct() |> count()` distinct users.
 
 
@@ -54,7 +54,9 @@ aisle_counts=
 
 There are `r nrow(aisle_counts)` aistles, and `r aisle_counts[1,1]` are the most items ordered from.
 
-## Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it.
+## Make a plot that shows the number of items ordered in each aisle, limiting this to aisles with more than 10000 items ordered. Arrange aisles sensibly, and organize your plot so others can read it. As shown:
+
+Aisles are ordered by ascending number of items. The majority of aisles have a low order count, close to the 10,000 mark or below. However, as we move to the right side of the graph, there is a noticeable increase in the number of items ordered for `fresh vegetables` and `fresh fruits`.
 
 ```{r}
 aisle_counts %>% 
@@ -74,7 +76,13 @@ aisle_counts %>%
         plot.title = element_text(hjust = 0.5))
 ```
 
-## Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”.
+## Make a table showing the three most popular items in each of the aisles “baking ingredients”, “dog food care”, and “packaged vegetables fruits”. As shown:
+
+`Baking Ingredients Aisle`: Sweeteners like "Light Brown Sugar" and leavening agents such as "Pure Baking Soda" and "Cane Sugar" are popular choices.
+
+`Dog Food Care Aisle`: Premium dog treats and high-quality dog food like "Organic Chicken & Brown Rice Recipe" are favored.
+
+`Packaged Vegetables Fruits Aisle`: Organic and healthy options like "Organic Baby Spinach" and "organic berries" are in high demand.
 
 ```{r}
 instacart %>% 
@@ -87,7 +95,9 @@ instacart %>%
   knitr::kable()
 ```
 
-## Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week.
+## Make a table showing the mean hour of the day at which Pink Lady Apples and Coffee Ice Cream are ordered on each day of the week. As shown:
+
+Pink Lady Apples tend to be purchased a bit earlier in the day compared to Coffee Ice Cream, except for day 5
 
 ```{r}
 instacart %>% 
@@ -96,7 +106,7 @@ instacart %>%
   summarize(mean_hour=mean(order_hour_of_day)) %>% 
   pivot_wider(names_from = order_dow,
               values_from=mean_hour) %>% 
-  knitr::kable()
+  knitr::kable(digits=2)
 ```
 
 
