@@ -251,6 +251,10 @@ The table shows the distribution of men and women across education levels. Both 
 covar_add_accel %>% 
   group_by(education,sex) %>% 
   summarize(count=n()) %>% 
+  pivot_wider(
+    names_from=sex,
+    values_from=count
+  ) %>% 
   knitr::kable()
 ```
 ## Create a visualization of the age distributions for men and women in each education category. Comment on these items. As shown:
@@ -282,7 +286,7 @@ covar_add_accel %>%
   mutate(total_activity=rowSums(select(., min1:min1440))) %>%
   ggplot(aes(x=age,y=total_activity,color=sex))+
   geom_point()+
-  geom_smooth(method = "lm", se = FALSE)+
+  geom_smooth(method = "lm")+
   facet_grid(~education)+
    labs(
     title = "Total Activity by Age, Sex, and Education Level",
@@ -290,6 +294,7 @@ covar_add_accel %>%
     y = "Total Activity",
     color = "Sex"
   )+
+  theme_bw()+
   theme(
     plot.title = element_text(hjust = 0.5)
   )
@@ -320,6 +325,7 @@ covar_add_accel %>%
     y = "Activity Level",
     color = "Sex"
   ) +
+  theme_bw()+
   theme(
     plot.title = element_text(hjust = 0.5)
   )+
