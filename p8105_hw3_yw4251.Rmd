@@ -115,7 +115,7 @@ instacart %>%
 data("brfss_smart2010")
 ```
 
-First, data cleaning. I standardize the column names, and filters rows where the topic is "Overall Health". It then reorders the responses in the 'response' column into an ascending order of health quality. The resulting cleaned data is stored in `cleaned_brfss`.
+First, data cleaning. I standardize the column names, and filters rows where the topic is "Overall Health". It then reorders the responses in the 'response' column into an ascending order of health quality. The resulting cleaned data is stored in `cleaned_brfss`. 
 
 ```{r}
 cleaned_brfss=
@@ -127,6 +127,8 @@ cleaned_brfss=
     levels = c("Poor", "Fair", "Good", "Very good", "Excellent"),
     ordered = TRUE))
 ```
+
+The dataset includes `r nrow(cleaned_brfss)` rows and `r ncol(cleaned_brfss)` columns. Important variables include class, topic, data value, response level, etc.
 
 ## In 2002, which states were observed at 7 or more locations? What about in 2010? As shown:
 
@@ -216,8 +218,7 @@ ggplot(ny_cleaned_brfss,aes(x=response,y=data_value,fill=response))+
 
 
 # Problem 3
-
-
+First, clean and merge the dataset. 
 ```{r}
 covar_df=read_csv("data/nhanes_covar.csv",skip=4) %>% 
   janitor::clean_names() %>% 
@@ -240,8 +241,11 @@ covar_add_accel=left_join(covar_df,accel_df,by="seqn") %>%
   drop_na()
   
 ```
+The merged dataset includes `r nrow(covar_add_accel)` rows and `r ncol(covar_add_accel)` columns, where each row represent an participant. Variables include sex, age, education, bmi and MIMS values for each minute.
 
-## Produce a reader-friendly table for the number of men and women in each education category, and create a visualization of the age distributions for men and women in each education category. Comment on these items.
+## Produce a reader-friendly table for the number of men and women in each education category.
+
+The table shows the distribution of men and women across education levels. Both genders are almost even in the "Less than high school" and "More than high school" categories. However, there are more males (35) than females (23) in the "High school equivalent" category.
 
 ```{r}
 covar_add_accel %>% 
@@ -249,6 +253,9 @@ covar_add_accel %>%
   summarize(count=n()) %>% 
   knitr::kable()
 ```
+## Create a visualization of the age distributions for men and women in each education category. Comment on these items. As shown:
+
+For those with "Less than high school", median ages are similar for both genders. In the "High school equivalent" category, males have a higher median age than females. However, in the "More than high school" group, both genders exhibit closely aligned median ages, with females having a slightly broader distribution.
 
 ```{r}
 ggplot(covar_add_accel,aes(x=sex,y=age,fill=sex))+
@@ -265,7 +272,10 @@ ggplot(covar_add_accel,aes(x=sex,y=age,fill=sex))+
   )
 ```
 
-## Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. Comment on your plot.
+## Traditional analyses of accelerometer data focus on the total activity over the day. Using your tidied dataset, aggregate across minutes to create a total activity variable for each participant. Plot these total activities (y-axis) against age (x-axis); your plot should compare men to women and have separate panels for each education level. Include a trend line or a smooth to illustrate differences. Comment on your plot. As shown:
+
+There's a noticeable decline in activity with age across all education levels.For individuals with "Less than high school" education, the decline is more pronounced, especially among males. Those with a "High school equivalent" education display a less steep decline, but males still show a greater reduction than females. Among the "More than high school" educated group, their decline shows least steep, and both genders show similar activity decline rates. Across all categories, males generally have higher activity levels at younger ages compared to females.
+
 
 ```{r}
 covar_add_accel %>% 
@@ -286,7 +296,10 @@ covar_add_accel %>%
 ```
 
 
-## Accelerometer data allows the inspection activity over the course of the day. Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Describe in words any patterns or conclusions you can make based on this graph; including smooth trends may help identify differences.
+## Accelerometer data allows the inspection activity over the course of the day. Make a three-panel plot that shows the 24-hour activity time courses for each education level and use color to indicate sex. Describe in words any patterns or conclusions you can make based on this graph; including smooth trends may help identify differences. As shown:
+
+The 24-hour activity graph showcases distinct patterns based on education level and gender. Across all educational backgrounds, activity tends to start low in the morning, peak during mid-day, and taper off in the evening. Males consistently display slightly higher activity than females, with the most prominent differentiation in the "More than High School" category. Specifically, males in this group exhibit a sharp mid-day activity surge, contrasting with the more gradual rise observed in females. This data suggests that while daily routines may be somewhat influenced by education, gender differences in activity levels are consistently present across all educational tiers.
+
 
 ```{r,fig.width = 8,fig.asp =1.2,out.width = "90%"}
 covar_add_accel %>% 
@@ -299,7 +312,7 @@ covar_add_accel %>%
   mutate(minute = as.numeric(minute) / 60) %>% 
   ggplot(aes(x=minute,y=activity_level,color=sex))+
   geom_point(alpha=0.7,size=1)+
-  geom_smooth()+
+  geom_smooth(se=FALSE)+
   facet_grid(education~.)+
   labs(
     title = "24-hour Activity Time Courses by Education Level and Sex",
