@@ -115,6 +115,8 @@ instacart %>%
 data("brfss_smart2010")
 ```
 
+First, data cleaning. I standardize the column names, and filters rows where the topic is "Overall Health". It then reorders the responses in the 'response' column into an ascending order of health quality. The resulting cleaned data is stored in `cleaned_brfss`.
+
 ```{r}
 cleaned_brfss=
   brfss_smart2010 %>% 
@@ -126,7 +128,9 @@ cleaned_brfss=
     ordered = TRUE))
 ```
 
-## In 2002, which states were observed at 7 or more locations? What about in 2010?
+## In 2002, which states were observed at 7 or more locations? What about in 2010? As shown:
+
+In 2002, CT, FL, MA, NC, NJ, PA were observed at 7 or more locations; In 2010, CA, CO, FL, MA, MD, NC, NE, NJ, NY, OH, PA, SC, TX, WA were observed at 7 or more locations.
 
 ```{r}
 cleaned_brfss %>% 
@@ -142,8 +146,9 @@ cleaned_brfss %>%
   knitr::kable()
 ```
 
-## Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help).
+## Construct a dataset that is limited to Excellent responses, and contains, year, state, and a variable that averages the data_value across locations within a state. Make a “spaghetti” plot of this average value over time within a state (that is, make a plot showing a line for each state across years – the geom_line geometry and group aesthetic will help). As shown:
 
+The Spaghetti Plot displays the average values from 2002 to 2010 for various U.S. states. It shows significant variability across states. A noticeable trend is the dip in average values for many states around 2006, followed by a subsequent recovery. The values range between approximately 15 and 30. There's no uniform trend evident for all the states across the shown years.
 
 ```{r}
 excel_cleaned_brfss=
@@ -153,21 +158,25 @@ excel_cleaned_brfss=
   summarize(avg_data_val=mean(data_value))
 
 ggplot(excel_cleaned_brfss,aes(x=year,y=avg_data_val,color=locationabbr))+
-  geom_line(size = 0.8,alpha=0.8)+
-  theme_minimal()+
-  theme(legend.text = element_text(size = 10))+
+  geom_line(size = 0.8,alpha=0.7)+
+  theme_classic()+
   labs(
-    title = "Spaghetti Chart of Average Value over Time within States",
+    title = "Spaghetti Chart of Average Value over Time by States",
     x = "Year",
-    y = "Average Data Values Across locations within State",
-    caption = "Data from the Excellent Cleaned Brfss") +
+    y = "Average Data Values Across locations within State") +
   theme(
-    plot.title = element_text(hjust = 0.5)
+    plot.title = element_text(hjust = 0.5),
+    legend.text = element_text(size = 8),
+    legend.position = "right",
+    legend.key.size = unit(0.5, "cm")
   )
   
 ```
 
-## Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State.
+## Make a two-panel plot showing, for the years 2006, and 2010, distribution of data_value for responses (“Poor” to “Excellent”) among locations in NY State. As shown:
+
+The distributions for the categories "Very good" and "Good" remain relatively stable across both years, indicating a consistent perception within these health categories. However, a more granular examination reveals a subtle decline in the "Excellent" category by 2010 and a concomitant increase in the "Poor" health category. These shifts, though not drastic, suggest potential underlying changes in the health landscape or in the subjective health evaluations of New Yorkers during this period. 
+
 
 ```{r}
 ny_cleaned_brfss=
@@ -192,6 +201,19 @@ ggplot(ny_cleaned_brfss,aes(x=data_value,y=response,fill=response))+
   )
 
 ```
+
+I also make a box plot to better investigate the distribution change.
+```{r}
+ggplot(ny_cleaned_brfss,aes(x=response,y=data_value,fill=response))+
+  geom_boxplot()+
+  facet_wrap(~year)+
+  labs(title="Distribution of Response Values in NY State (2006 vs 2010)",
+       x="Response", 
+       y="Data Value") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
 
 # Problem 3
 
