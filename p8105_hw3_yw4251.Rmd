@@ -202,7 +202,7 @@ ggplot(ny_cleaned_brfss,aes(x=data_value,y=response,fill=response))+
 
 ```
 
-I also make a box plot to better investigate the distribution change.
+I also make a box plot to better investigate the distribution value change. Both years show higher median values for "Good" and "Very good" responses. The "Good" and "Very good" categories exhibit higher median values compared to other health assessments. The "Excellent" category sees an upward shift in 2010, while "Fair" remains stable across both years. Notably, the "Poor" category has the lowest median values in both years, with minimal variability. Overall, positive health perceptions prevail, with minor changes between the two years.
 ```{r}
 ggplot(ny_cleaned_brfss,aes(x=response,y=data_value,fill=response))+
   geom_boxplot()+
@@ -216,6 +216,7 @@ ggplot(ny_cleaned_brfss,aes(x=response,y=data_value,fill=response))+
 
 
 # Problem 3
+
 
 ```{r}
 covar_df=read_csv("data/nhanes_covar.csv",skip=4) %>% 
